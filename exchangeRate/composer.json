@@ -1,0 +1,30 @@
+{
+    "name": "netkod-bilisim/exchange-rate",
+    "description": "A Turkey-specific exchange rate conversion and package",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "NetkodBilisim\\ExchangeRate\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "İlknur Doğan",
+            "email": "ilknurdogan254@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.4",
+    "guzzlehttp/guzzle": "^7.0"
+    },
+    "extra": {
+    "laravel": {
+      "providers": [
+        "NetkodBilisim\\ExchangeRate\\ExchangeRateServiceProvider"
+      ]
+    }
+  }
+
+}
