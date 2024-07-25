@@ -1,11 +1,11 @@
 {
-    "name": "netkod-bilisim/exchange-rate",
-    "description": "A Turkey-specific exchange rate conversion and package",
+    "name": "ilknur-dogan/exchange-rate",
+    "description": "Exchange rate transformation package",
     "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "NetkodBilisim\\ExchangeRate\\": "src/"
+            "IlknurDogan\\ExchangeRate\\": "src/"
         }
     },
     "authors": [
@@ -15,16 +15,17 @@
         }
     ],
     "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "php": ">=7.4",
-    "guzzlehttp/guzzle": "^7.0"
+         "illuminate/support": "^11.0",
+    "guzzlehttp/guzzle": "^7.9"
     },
     "extra": {
     "laravel": {
       "providers": [
-        "NetkodBilisim\\ExchangeRate\\ExchangeRateServiceProvider"
+         "IlknurDogan\\ExchangeRate\\Providers\\ExchangeRateServiceProvider"
       ]
     }
   }
-
 }
