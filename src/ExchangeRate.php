@@ -34,25 +34,51 @@ use GuzzleHttp\Client;
             throw new \Exception('Unable to fetch exchange rates');
         }
     
-        public function convert($date, $from) {
+        public function convert($date, $from, $to) {
             $rates = $this->getRate($date);
           
             $currencies = $rates["Currency"];
     
+           
             $fromRate = null;
+            $toRate = null;
+            
     
             foreach ($currencies as $currency) {
-                if ($currency['@attributes']['Kod'] === $from) {
-                    $fromRate = $currency['ForexBuying'];
+                if ($from === 'TRY') {
+                    $fromRate = 1.0;
+                } else if ($currency['@attributes']['Kod'] === $from) {
+                    $fromRate = $currency['ForexSelling'];
+                }
+    
+                if ($to === 'TRY') {
+                    $toRate =  1.0;
+                } else if ($currency['@attributes']['Kod'] === $to) {
+                    $toRate = $currency['ForexBuying'];
+                }
+    
+                if ($from !== 'TRY' && $to !== 'TRY' && isset($currency['CrossRateUSD'])) {
+                    $fromRateUSD = null;
+                    $toRateUSD = null;
+                    foreach ($currencies as $curr) {
+                        if ($curr['@attributes']['Kod'] === $from) {
+                            $fromRateUSD = $curr['CrossRateUSD'];
+                        }
+                        if ($curr['@attributes']['Kod'] === $to) {
+                            $toRateUSD = $curr['CrossRateUSD'];
+                        }
+                    }
+                    if ($fromRateUSD && $toRateUSD) {
+                        return number_format($toRateUSD / $fromRateUSD, 2,',','');
+                    }
                 }
             }
     
-            if ($fromRate === null) {
-                throw new \Exception("Conversion rate 
-                not found.");
+            if ($fromRate === null || $toRate === null) {
+                throw new \Exception("Conversion rate not found.");
             }
     
-    
-            return $fromRate;
+            return number_format($fromRate / $toRate,2,",","");
         }
+
 }
