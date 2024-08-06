@@ -1,4 +1,4 @@
-# ExchangeRate PHP Kütüphanesi
+# ExchangeRate PHP Library
 <div style="text-align: center">
 <a href="https://packagist.org/packages/ilknur-dogan/exchange-rate" rel="nofollow">
     <img src="https://img.shields.io/packagist/v/ilknur-dogan/exchange-rate" alt="Latest Stable Version">
