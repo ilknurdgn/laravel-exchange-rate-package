@@ -7,13 +7,40 @@ use GuzzleHttp\Client;
  class ExchangeRate
 {
 
+    public function validateDateFormat($date) {
+        $dateTime = \DateTime::createFromFormat('Y-m-d', $date);
+        return $dateTime && $dateTime->format('Y-m-d') === $date;
+    }
+
+    public function validateCurrency($from, $to, $currencies) {
+        $validCurrencies= ["TRY"];
+
+        foreach ($currencies as $currency) {
+            $validCurrencies[] = $currency['@attributes']['Kod'];
+        }
+        
+        if ((!in_array($from, $validCurrencies) || !in_array($to, $validCurrencies)) ) {
+            throw new \InvalidArgumentException('Invalid currency code. Please use one of the following: ' . implode(', ', $validCurrencies));
+        }
+
+        return true;
+    }
+
+
     public  function  getRate($date){
+
+        $dateTime = \DateTime::createFromFormat('Y-m-d', $date);
+        if (!$this->validateDateFormat($date)) {
+            throw new \InvalidArgumentException('Invalid date format. Expected format: YYYY-MM-DD');
+        }
+
         $currentDate = date("dmY");
         $dateTime = new \DateTime($date);
         $ymDateFormat = $dateTime->format("Ym");
         $dmyDateFormat= $dateTime->format("dmY");
     
         $client = new Client();
+
     
         if($currentDate === $dmyDateFormat){
             $url =  "https://www.tcmb.gov.tr/kurlar/today.xml";
@@ -39,38 +66,40 @@ use GuzzleHttp\Client;
           
             $currencies = $rates["Currency"];
     
-           
             $fromRate = null;
             $toRate = null;
             
-    
-            foreach ($currencies as $currency) {
-                if ($from === 'TRY') {
-                    $fromRate = 1.0;
-                } else if ($currency['@attributes']['Kod'] === $from) {
-                    $fromRate = $currency['ForexSelling'];
-                }
-    
-                if ($to === 'TRY') {
-                    $toRate =  1.0;
-                } else if ($currency['@attributes']['Kod'] === $to) {
-                    $toRate = $currency['ForexBuying'];
-                }
-    
-                if ($from !== 'TRY' && $to !== 'TRY' && isset($currency['CrossRateUSD'])) {
-                    $fromRateUSD = null;
-                    $toRateUSD = null;
-                    foreach ($currencies as $curr) {
-                        if ($curr['@attributes']['Kod'] === $from) {
-                            $fromRateUSD = $curr['CrossRateUSD'];
-                        }
-                        if ($curr['@attributes']['Kod'] === $to) {
-                            $toRateUSD = $curr['CrossRateUSD'];
-                        }
+            if($this->validateCurrency($from, $to, $currencies)){
+                foreach ($currencies as $currency) {
+                    if ($from === 'TRY') {
+                        $fromRate = 1.0;
+                    } else if ($currency['@attributes']['Kod'] === $from) {
+                        $fromRate = $currency['ForexSelling'];
                     }
-                    if ($fromRateUSD && $toRateUSD) {
-                        return number_format($toRateUSD / $fromRateUSD, 2,',','');
+        
+                    if ($to === 'TRY') {
+                        $toRate =  1.0;
+                    } else if ($currency['@attributes']['Kod'] === $to) {
+                        $toRate = $currency['ForexBuying'];
                     }
+        
+                }
+            }
+           
+          
+            if ($from !== 'TRY' && $to !== 'TRY' && isset($currency['CrossRateUSD'])) {
+                $fromRateUSD = null;
+                $toRateUSD = null;
+                foreach ($currencies as $curr) {
+                    if ($curr['@attributes']['Kod'] === $from) {
+                        $fromRateUSD = $curr['CrossRateUSD'];
+                    }
+                    if ($curr['@attributes']['Kod'] === $to) {
+                        $toRateUSD = $curr['CrossRateUSD'];
+                    }
+                }
+                if ($fromRateUSD && $toRateUSD) {
+                    return number_format($toRateUSD / $fromRateUSD, 2,',','');
                 }
             }
     
@@ -81,4 +110,8 @@ use GuzzleHttp\Client;
             return number_format($fromRate / $toRate,2,",","");
         }
 
+
+
+
 }
+
