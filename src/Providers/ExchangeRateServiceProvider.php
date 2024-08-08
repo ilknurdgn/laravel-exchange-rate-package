@@ -9,8 +9,7 @@ class ExchangeRateServiceProvider extends ServiceProvider
 {
     public function register(){
 
-         // Paketin yapılandırma dosyasındaki varsayılan değerleri, uygulamanızın mevcut yapılandırmasıyla birleştirir.
-        // Dosyayı doğrudan kopyalamaz, sadece değerleri birleştirir.
+        
     //    $this->mergeConfigFrom(
     //     __DIR__.'/../../config/exchange-rate.php', 'exchange_rate'
     //    );
@@ -22,8 +21,6 @@ class ExchangeRateServiceProvider extends ServiceProvider
     }
     public function boot(){
 
-        //Kullanıcıların paketin yapılandırma dosyalarını uygulamalarının config dizinine kopyalamasını sağlar.
-        // Kullanıcılar bu dosyada değişiklik yaparak kendi ihtiyaçlarına göre özelleştirebilirler.
         // $this->publishes([
         //     __DIR__."/../../config/exchange-rate.php" => config_path("exchange-rate.php")
         // ], "config");

@@ -12,13 +12,9 @@ use GuzzleHttp\Client;
         return $dateTime && $dateTime->format('Y-m-d') === $date;
     }
 
-    public function validateCurrency($from, $to, $currencies) {
-        $validCurrencies= ["TRY"];
+    public function validateCurrency($from, $to) {
+        $validCurrencies= ["TRY", "USD", "AUD", "DKK", "EUR", "GBP", "CHF", "SEK", "CAD", "KWD", "NOK", "SAR", "JPY", "BGN", "RON", "RUB", "IRR", "CNY", "PKR", "QAR", "KRW", "AZN", "AED", "XDR"];
 
-        foreach ($currencies as $currency) {
-            $validCurrencies[] = $currency['@attributes']['Kod'];
-        }
-        
         if ((!in_array($from, $validCurrencies) || !in_array($to, $validCurrencies)) ) {
             throw new \InvalidArgumentException('Invalid currency code. Please use one of the following: ' . implode(', ', $validCurrencies));
         }
@@ -69,7 +65,7 @@ use GuzzleHttp\Client;
             $fromRate = null;
             $toRate = null;
             
-            if($this->validateCurrency($from, $to, $currencies)){
+            if($this->validateCurrency($from, $to)){
                 foreach ($currencies as $currency) {
                     if ($from === 'TRY') {
                         $fromRate = 1.0;
